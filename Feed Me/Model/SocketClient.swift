@@ -43,7 +43,7 @@ class SocketClient {
   }
   
   func write(coordinate: CLLocationCoordinate2D) {
-    let arr: [String: Double] = ["lat" : coordinate.latitude, "long" : coordinate.longitude]
+    let arr: [String: Double] = ["lat" : coordinate.latitude, "lon" : coordinate.longitude]
     do {
       let json = try NSJSONSerialization.dataWithJSONObject(arr, options: [])
       self.socket.emit("broadcast", json)
