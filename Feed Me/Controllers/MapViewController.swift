@@ -56,6 +56,13 @@ class MapViewController: UIViewController, SocketClientProtocol {
     }
   }
   
+  func didSocketDisconnected(data: String) {
+    //let markerToRemove = markers_dictionary[data]
+    markers_dictionary[data]?.map = nil
+   // markerToRemove.map = nil
+    markers_dictionary[data] = nil
+  }
+  
   
   func didFinishReading(data: String) {
     print("Data to UI: ", data)

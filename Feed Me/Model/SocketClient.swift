@@ -11,6 +11,7 @@ import Socket_IO_Client_Swift
 
 protocol SocketClientProtocol {
   func didFinishReading(data: String)
+  func didSocketDisconnected(data: String)
 }
 
 class SocketClient {
@@ -39,6 +40,10 @@ class SocketClient {
     
     socket.on("broadcast") {data, ack in
       self.callback?.didFinishReading(data[0] as! String)
+    }
+    
+    socket.on("disconnect") {data, ack in
+      self.callback?.didSocketDisconnected(data[0] as! String)
     }
   }
   
