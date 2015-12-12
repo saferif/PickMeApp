@@ -44,6 +44,7 @@ class MapViewController: UIViewController, SocketClientProtocol {
     client.callback = self
     client.connect()
     locationManager.delegate = self
+    mapView.delegate = self
     locationManager.requestWhenInUseAuthorization()
   }
   
@@ -57,9 +58,7 @@ class MapViewController: UIViewController, SocketClientProtocol {
   }
   
   func didSocketDisconnected(data: String) {
-    //let markerToRemove = markers_dictionary[data]
     markers_dictionary[data]?.map = nil
-   // markerToRemove.map = nil
     markers_dictionary[data] = nil
   }
   
@@ -94,7 +93,23 @@ extension MapViewController: TypesTableViewControllerDelegate {
   }
 }
 
-extension MapViewController : CLLocationManagerDelegate {
+extension MapViewController : CLLocationManagerDelegate, GMSMapViewDelegate {
+  
+  func mapView(mapView: GMSMapView!, didTapMarker marker: GMSMarker!) -> Bool {
+    
+    //разобраться с хренью снизу
+    
+    
+    //let myFirstButton = UIButton()
+    //myFirstButton.setTitle("Test", forState: .Normal)
+    //myFirstButton.setTitleColor(UIColor.blueColor(), forState: .Normal)
+    //myFirstButton.frame = CGRectMake(15, -50, 300, 500)
+    //myFirstButton.addTarget(self, action: "pressed:", forControlEvents: .TouchUpInside)
+    
+    //self.view.addSubview(myFirstButton)
+    return true
+  }
+  
   func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
     if status == .AuthorizedWhenInUse {
 
