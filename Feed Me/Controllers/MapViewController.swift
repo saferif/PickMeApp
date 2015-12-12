@@ -33,9 +33,9 @@ class MapViewController: UIViewController, SocketClientProtocol {
   var searchedTypes = ["bakery", "bar", "cafe", "grocery_or_supermarket", "restaurant"]
   
   let locationManager = CLLocationManager()
-  let client = SocketClient(host: "192.168.28.1", port: 8000)
+  let client = SocketClient(host: "46.101.122.129", port: 80)
   var updateOnce = true
-  var markers_dictionary = [Int: GMSMarker]() //Remove unused???
+  var markers_dictionary = [String: GMSMarker]()
   
   @IBOutlet weak var mapView: GMSMapView!
   override func viewDidLoad() {
@@ -58,19 +58,23 @@ class MapViewController: UIViewController, SocketClientProtocol {
   
   
   func didFinishReading(data: String) {
-    print("Data from UI: ", data)
-    let usersArray = data.componentsSeparatedByString(",")
-    for user in usersArray {
-      let coordsArray = user.componentsSeparatedByString(" ")
-      if let m = markers_dictionary[Int(coordsArray[0])!] {
-         m.position = CLLocationCoordinate2DMake(Double(coordsArray[1])!, Double(coordsArray[2])!)
+    print("Data to UI: ", data)
+    do {
+      let json = try NSJSONSerialization.JSONObjectWithData(data.dataUsingEncoding(NSUTF8StringEncoding)!, options: .AllowFragments)
+      let uuid = json["from"] as! String
+      let latitude = json["lat"] as! Double
+      let longitude = json["long"] as! Double
+      if let m = markers_dictionary[uuid] {
+        m.position = CLLocationCoordinate2DMake(latitude, longitude)
       } else {
         let marker = GMSMarker()
-        marker.title = coordsArray[0]
-        marker.position = CLLocationCoordinate2DMake(Double(coordsArray[1])!, Double(coordsArray[2])!)
+        marker.title = uuid
+        marker.position = CLLocationCoordinate2DMake(latitude, longitude)
         marker.map = mapView
-        markers_dictionary[Int(coordsArray[0])!] = marker
+        markers_dictionary[uuid] = marker
       }
+    } catch {
+      print("error serializing JSON: \(error)")
     }
   }
 }
@@ -86,8 +90,6 @@ extension MapViewController: TypesTableViewControllerDelegate {
 extension MapViewController : CLLocationManagerDelegate {
   func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
     if status == .AuthorizedWhenInUse {
-      while (!client.connected) {
-      }
       locationManager.startUpdatingLocation()
       mapView.myLocationEnabled = true
       mapView.settings.myLocationButton = true
@@ -108,6 +110,7 @@ extension MapViewController : CLLocationManagerDelegate {
      // marker.position = CLLocationCoordinate2DMake(marker.position.latitude + 0.0001, marker.position.longitude)
       
       print(location.coordinate)
+      client.write(location.coordinate)
       
      // locationManager.stopUpdatingLocation()
     }
