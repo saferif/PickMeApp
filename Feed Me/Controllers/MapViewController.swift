@@ -26,18 +26,23 @@
 
 import UIKit
 
-class MapViewController: UIViewController {
+class MapViewController: UIViewController, SocketClientProtocol {
   
   @IBOutlet weak var mapCenterPinImage: UIImageView!
   @IBOutlet weak var pinImageVerticalConstraint: NSLayoutConstraint!
   var searchedTypes = ["bakery", "bar", "cafe", "grocery_or_supermarket", "restaurant"]
   
   let locationManager = CLLocationManager()
+  let client = SocketClient(host: "192.168.28.1", port: 8000)
+  var updateOnce = true
+  var markers_dictionary = [Int: GMSMarker]() //Remove unused???
   
   @IBOutlet weak var mapView: GMSMapView!
   override func viewDidLoad() {
     super.viewDidLoad()
     // Do any additional setup after loading the view, typically from a nib.
+    client.callback = self
+    client.connect()
     locationManager.delegate = self
     locationManager.requestWhenInUseAuthorization()
   }
@@ -48,6 +53,24 @@ class MapViewController: UIViewController {
       let controller = navigationController.topViewController as! TypesTableViewController
       controller.selectedTypes = searchedTypes
       controller.delegate = self
+    }
+  }
+  
+  
+  func didFinishReading(data: String) {
+    print("Data from UI: ", data)
+    let usersArray = data.componentsSeparatedByString(",")
+    for user in usersArray {
+      let coordsArray = user.componentsSeparatedByString(" ")
+      if let m = markers_dictionary[Int(coordsArray[0])!] {
+         m.position = CLLocationCoordinate2DMake(Double(coordsArray[1])!, Double(coordsArray[2])!)
+      } else {
+        let marker = GMSMarker()
+        marker.title = coordsArray[0]
+        marker.position = CLLocationCoordinate2DMake(Double(coordsArray[1])!, Double(coordsArray[2])!)
+        marker.map = mapView
+        markers_dictionary[Int(coordsArray[0])!] = marker
+      }
     }
   }
 }
@@ -63,19 +86,30 @@ extension MapViewController: TypesTableViewControllerDelegate {
 extension MapViewController : CLLocationManagerDelegate {
   func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
     if status == .AuthorizedWhenInUse {
-      
+      while (!client.connected) {
+      }
       locationManager.startUpdatingLocation()
-      
       mapView.myLocationEnabled = true
       mapView.settings.myLocationButton = true
+      
     }
   }
   func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
     if let location = locations.first {
+      if (updateOnce) {
+        mapView.camera = GMSCameraPosition(target: location.coordinate, zoom: 15, bearing: 0, viewingAngle: 0)
+      /*  marker.position = CLLocationCoordinate2DMake(37.4, location.coordinate.longitude)
+        marker.title = "Hello World"
+        marker.map = mapView*/
+        updateOnce = false
+
+      }
+      //print(client.connected)
+     // marker.position = CLLocationCoordinate2DMake(marker.position.latitude + 0.0001, marker.position.longitude)
       
-      mapView.camera = GMSCameraPosition(target: location.coordinate, zoom: 15, bearing: 0, viewingAngle: 0)
+      print(location.coordinate)
       
-      locationManager.stopUpdatingLocation()
+     // locationManager.stopUpdatingLocation()
     }
     
   }
