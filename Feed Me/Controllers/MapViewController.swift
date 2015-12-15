@@ -33,18 +33,28 @@ class MapViewController: UIViewController, SocketClientProtocol {
   var searchedTypes = ["bakery", "bar", "cafe", "grocery_or_supermarket", "restaurant"]
   
   let locationManager = CLLocationManager()
-  let client = SocketClient(host: "46.101.122.129", port: 80)
+  //let client = SocketClient(host: "46.101.122.129", port: 80)
   var updateOnce = true
   var markers_dictionary = [String: GMSMarker]()
+  var userInfo: NSData!
+  var client: SocketClient!
   
   @IBOutlet weak var mapView: GMSMapView!
   override func viewDidLoad() {
     super.viewDidLoad()
     // Do any additional setup after loading the view, typically from a nib.
+    let theJSONText = NSString(data: userInfo!,
+      encoding: NSUTF8StringEncoding)
+    print("JSON string = \(theJSONText!)")
+    client = SocketClient(host: "192.168.28.1", port: 3000, connectParams: ["userInfo": ["username": "aa", "carNumber": "123"]])
     client.callback = self
     client.connect()
     locationManager.delegate = self
     mapView.delegate = self
+    let marker = GMSMarker()
+    marker.position = CLLocationCoordinate2DMake(37.4, -122)
+    marker.title = "Hello World"
+    marker.map = mapView
     locationManager.requestWhenInUseAuthorization()
   }
   
@@ -95,9 +105,18 @@ extension MapViewController: TypesTableViewControllerDelegate {
 
 extension MapViewController : CLLocationManagerDelegate, GMSMapViewDelegate {
   
-  func mapView(mapView: GMSMapView!, didTapMarker marker: GMSMarker!) -> Bool {
-    
-    //разобраться с хренью снизу
+  func mapView(mapView: GMSMapView!, markerInfoContents marker: GMSMarker!) -> UIView! {
+    if let infoView = NSBundle.mainBundle().loadNibNamed("UserInfoView", owner: nil, options: nil).first as? UserInfoView {
+      return infoView
+    } else {
+      return nil
+    }
+  }
+  /*func mapView(mapView: GMSMapView!, didTapMarker marker: GMSMarker!) -> Bool {
+    return true
+  }*/
+  
+  /*  //разобраться с хренью снизу
     
     
     //let myFirstButton = UIButton()
@@ -108,7 +127,7 @@ extension MapViewController : CLLocationManagerDelegate, GMSMapViewDelegate {
     
     //self.view.addSubview(myFirstButton)
     return true
-  }
+  }*/
   
   func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
     if status == .AuthorizedWhenInUse {

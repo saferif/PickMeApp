@@ -11,12 +11,40 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
+         contextName = "MapViewController.viewDidLoad() -&gt; ():MapViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "clientInfo">
+            </PersistentString>
+            <PersistentString
+               value = "vv">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "SocketClient.init(host : String, port : UInt16, connectParams : [String : AnyObject]) -&gt; SocketClient:SocketClient.swift">
+      </ContextState>
+      <ContextState
+         contextName = "LoginViewController.prepareForSegue(UIStoryboardSegue, sender : AnyObject?) -&gt; ():LoginViewController.swift">
+      </ContextState>
+      <ContextState
+         contextName = "SocketClient.init(host : String, port : UInt16, connectParams : [String : NSData]) -&gt; SocketClient:SocketClient.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "MapViewController.locationManager(CLLocationManager, didChangeAuthorizationStatus : CLAuthorizationStatus) -&gt; ():MapViewController.swift">
          <PersistentStrings>
             <PersistentString
                value = "myself">
             </PersistentString>
          </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "MapViewController.prepareForSegue(UIStoryboardSegue, sender : AnyObject?) -&gt; ():MapViewController.swift">
       </ContextState>
    </ContextStates>
 </VariablesViewState>

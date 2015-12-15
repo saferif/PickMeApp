@@ -17,15 +17,28 @@ protocol SocketClientProtocol {
 class SocketClient {
   let host: String
   let port: UInt16
+  let connectParams: [String: [String: String]]
   let socket: SocketIOClient
   var connected = false;
   var callback: SocketClientProtocol?
   
 
-  init(host: String, port: UInt16) {
+  init(host: String, port: UInt16, connectParams: [String: [String:String]]) {
     self.host = host
     self.port = port
-    self.socket = SocketIOClient(socketURL: host + ":" + String(port), options: [.Log(true), .ForcePolling(true)])
+    self.connectParams = connectParams
+   /* print(self.connectParams)
+    do {
+    var vv = connectParams["userInfo"]!
+    var datastring = NSString(data: connectParams["userInfo"]!, encoding: NSUTF8StringEncoding)
+    let json = try NSJSONSerialization.JSONObjectWithData(datastring!.dataUsingEncoding(NSUTF8StringEncoding)!, options: [])
+      print(json)
+    } catch {
+      
+    }*/
+    
+    self.socket = SocketIOClient(socketURL: host + ":" + String(port),
+      options: [.Log(true), .ForcePolling(true), .ConnectParams(connectParams)])
   }
   
   func connect() {
