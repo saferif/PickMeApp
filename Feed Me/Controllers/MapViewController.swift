@@ -25,11 +25,9 @@
 */
 
 import UIKit
+import PPRevealSideViewController
 
 class MapViewController: UIViewController, SocketClientProtocol {
-  
-  @IBOutlet weak var mapCenterPinImage: UIImageView!
-  @IBOutlet weak var pinImageVerticalConstraint: NSLayoutConstraint!
   var searchedTypes = ["bakery", "bar", "cafe", "grocery_or_supermarket", "restaurant"]
   
   let locationManager = CLLocationManager()
@@ -40,6 +38,10 @@ class MapViewController: UIViewController, SocketClientProtocol {
   var client: SocketClient!
   
   @IBOutlet weak var mapView: GMSMapView!
+  @IBOutlet weak var pickMeButton : UIButton!
+  @IBOutlet weak var destinationTextField : UITextField!
+  @IBOutlet weak var costTextField : UITextField!
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     // Do any additional setup after loading the view, typically from a nib.
@@ -93,6 +95,10 @@ class MapViewController: UIViewController, SocketClientProtocol {
       print("error serializing JSON: \(error)")
     }
   }
+  
+  @IBAction func pickMeTapped(sender : AnyObject) {
+
+  }
 }
 
 // MARK: - TypesTableViewControllerDelegate
@@ -112,11 +118,23 @@ extension MapViewController : CLLocationManagerDelegate, GMSMapViewDelegate {
       return nil
     }
   }
-  /*func mapView(mapView: GMSMapView!, didTapMarker marker: GMSMarker!) -> Bool {
-    return true
-  }*/
+
+  func mapView(mapView: GMSMapView!, didLongPressAtCoordinate coordinate: CLLocationCoordinate2D) {
+    let geocoder = GMSGeocoder()
+    geocoder.reverseGeocodeCoordinate(coordinate) { response, error in
+      if let address = response?.firstResult() {
+        let lines = address.lines as! [String]
+        self.destinationTextField.text = lines.joinWithSeparator("\n")
+        UIView.animateWithDuration(0.25) {
+          self.view.layoutIfNeeded()
+        }
+      }
+    }
+  }
   
-  /*  //разобраться с хренью снизу
+  func mapView(mapView: GMSMapView!, didTapMarker marker: GMSMarker!) -> Bool {
+    
+    //разобраться с хренью снизу
     
     
     //let myFirstButton = UIButton()
@@ -127,7 +145,7 @@ extension MapViewController : CLLocationManagerDelegate, GMSMapViewDelegate {
     
     //self.view.addSubview(myFirstButton)
     return true
-  }*/
+  }
   
   func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
     if status == .AuthorizedWhenInUse {
