@@ -45,10 +45,7 @@ class MapViewController: UIViewController, SocketClientProtocol {
   override func viewDidLoad() {
     super.viewDidLoad()
     // Do any additional setup after loading the view, typically from a nib.
-    let theJSONText = NSString(data: userInfo!,
-      encoding: NSUTF8StringEncoding)
-    print("JSON string = \(theJSONText!)")
-    client = SocketClient(host: "192.168.28.1", port: 3000, connectParams: ["userInfo": ["username": "aa", "carNumber": "123"]])
+    client = SocketClient(host: "192.168.28.1", port: 3000, connectParams: [:])
     client.callback = self
     client.connect()
     locationManager.delegate = self
