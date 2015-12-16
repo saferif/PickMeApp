@@ -47,7 +47,7 @@ class SocketClient {
       
     }*/
     self.socket = SocketIOClient(socketURL: host + ":" + String(port),
-      options: [.Log(true), .ForcePolling(true)])
+      options: [.Log(true)])
   }
   
   func connect(userInfo: NSData) {
@@ -108,7 +108,7 @@ class SocketClient {
   }
   
   func write(offer : PassengerOffer) {
-    let json_dict = ["from_type" : "passenger", "price" : offer.price, "destination" : ["lat" : offer.destination.latitude, "lon" : offer.destination.longitude], "current" : ["lat" : offer.currentPosition.latitude, "lon" : offer.currentPosition.longitude]]
+    let json_dict = ["from_type" : "psngr", "price" : offer.price, "dst" : ["lat" : offer.destination.latitude, "lon" : offer.destination.longitude], "current" : ["lat" : offer.currentPosition.latitude, "lon" : offer.currentPosition.longitude]]
     do {
       let json = try NSJSONSerialization.dataWithJSONObject(json_dict, options: [])
       print(NSString(data: json, encoding: NSUTF8StringEncoding))

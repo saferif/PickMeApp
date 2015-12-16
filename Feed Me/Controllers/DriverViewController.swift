@@ -67,7 +67,7 @@ extension DriverViewController : SocketClientProtocol {
   func didFinishReading(data: String) {
     do {
       let json = try NSJSONSerialization.JSONObjectWithData(data.dataUsingEncoding(NSUTF8StringEncoding)!, options: .AllowFragments)
-      if (json["from_type"] as! String == "passenger") {
+      if (json["from_type"] as! String == "psngr") {
         let uuid = json["from"] as! String
         let latitude = json["current"]!!["lat"] as! Double
         let longitude = json["current"]!!["lon"] as! Double

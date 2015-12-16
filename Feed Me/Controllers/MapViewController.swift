@@ -119,8 +119,8 @@ class MapViewController: UIViewController, SocketClientProtocol {
       getUserData["username"] = json["username"]
       getUserData["carNumber"] = json["carNumber"]
       if (currentMarker == markers_dictionary[json["uuid"] as! String]) {
+         getUserData["available"] = true;
         mapView.selectedMarker = currentMarker
-        getUserData["available"] = true;
         
       }
     } catch {
@@ -151,14 +151,14 @@ extension MapViewController : CLLocationManagerDelegate, GMSMapViewDelegate {
   
   func mapView(mapView: GMSMapView!, markerInfoWindow marker: GMSMarker!) -> UIView! {
     if ((getUserData["available"] as! Bool) == false) {
-      let uuid : String? = "1"
+     // let uuid = "1"
+      let uuid = ((markers_dictionary as NSDictionary).allKeysForObject(marker) as! [String]).first
       currentMarker = marker
       markers_dictionary[uuid!] = currentMarker
       //dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
       self.client.getUserInfo(uuid!)
       return nil
     }
-    // let uuid = ((markers_dictionary as NSDictionary).allKeysForObject(marker) as! [String]).first
     
     if let infoView = NSBundle.mainBundle().loadNibNamed("UserInfoView", owner: nil, options: nil).first as? UserInfoView {
       infoView.username.text = getUserData["username"] as? String

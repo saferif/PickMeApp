@@ -65,7 +65,6 @@
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
                 <outlet property="phoneNumber" destination="zai-Qj-bka" id="asJ-bl-eUB"/>
-                <outlet property="userName" destination="dTa-K2-OMl" id="kME-wX-rMc"/>
                 <outlet property="userRating" destination="CFa-Df-wwD" id="dTP-Mj-x7W"/>
                 <outlet property="username" destination="dTa-K2-OMl" id="nH4-ig-1H4"/>
             </connections>

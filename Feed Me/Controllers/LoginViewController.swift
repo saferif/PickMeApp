@@ -45,6 +45,7 @@ class LoginViewController: UIViewController {
       if segue.identifier == "LoginSegue" {
        let tabBarController = segue.destinationViewController as! UITabBarController
        if let mapVC = tabBarController.viewControllers![0] as? MapViewController {
+
        // if let mapVC = segue.destinationViewController as? MapViewController {
           do {
             print(usernameText.text!)
