@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0E9DAE561BDA80A4009DA461 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0E9DAE551BDA80A4009DA461 /* LaunchScreen.storyboard */; };
 		431C1AEADBBF6CF7CD24673E /* Pods_Feed_Me.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1169E5095AB4D4AD182CA6DD /* Pods_Feed_Me.framework */; };
+		446BB5D01C21C5F800678C44 /* DriverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446BB5CF1C21C5F800678C44 /* DriverViewController.swift */; };
 		448086C31C21686800087FE5 /* PassengerOffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 448086C21C21686800087FE5 /* PassengerOffer.swift */; };
 		620855921C1E00DD00F62A33 /* UserInfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 620855911C1E00DD00F62A33 /* UserInfoView.xib */; };
 		624CD5651C1F476200DA3E84 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 624CD5641C1F476200DA3E84 /* LoginViewController.swift */; };
@@ -48,6 +49,7 @@
 /* Begin PBXFileReference section */
 		0E9DAE551BDA80A4009DA461 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1169E5095AB4D4AD182CA6DD /* Pods_Feed_Me.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Feed_Me.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		446BB5CF1C21C5F800678C44 /* DriverViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DriverViewController.swift; sourceTree = "<group>"; };
 		448086C21C21686800087FE5 /* PassengerOffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PassengerOffer.swift; sourceTree = "<group>"; };
 		44B67AE41BF7677A0052AD12 /* Feed Me-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Feed Me-Bridging-Header.h"; sourceTree = "<group>"; };
 		554C5B67CC462FF61E0B7CAF /* Pods-Feed Me.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Feed Me.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Feed Me/Pods-Feed Me.debug.xcconfig"; sourceTree = "<group>"; };
@@ -206,6 +208,7 @@
 				B48F648D19B22F8700710BEB /* MapViewController.swift */,
 				B48F649B19B22FA500710BEB /* TypesTableViewController.swift */,
 				624CD5641C1F476200DA3E84 /* LoginViewController.swift */,
+				446BB5CF1C21C5F800678C44 /* DriverViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -383,6 +386,7 @@
 				62D3F9371C1F95A2007D3F67 /* SocketStringReader.swift in Sources */,
 				62D3F92B1C1F95A2007D3F67 /* SocketEngine.swift in Sources */,
 				62D3F93A1C1F95A2007D3F67 /* WebSocket.swift in Sources */,
+				446BB5D01C21C5F800678C44 /* DriverViewController.swift in Sources */,
 				62D3F92F1C1F95A2007D3F67 /* SocketEventHandler.swift in Sources */,
 				624CD5651C1F476200DA3E84 /* LoginViewController.swift in Sources */,
 				62D3F9331C1F95A2007D3F67 /* SocketIOClientStatus.swift in Sources */,

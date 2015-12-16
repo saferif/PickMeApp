@@ -179,7 +179,7 @@
         <!--Driver-->
         <scene sceneID="16h-b7-2UK">
             <objects>
-                <viewController id="nHk-hM-I65" sceneMemberID="viewController">
+                <viewController id="nHk-hM-I65" customClass="DriverViewController" customModule="Feed_Me" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="M2g-5F-JMm"/>
                         <viewControllerLayoutGuide type="bottom" id="iQe-y6-vE4"/>
@@ -189,19 +189,22 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="l7U-7v-0lH" customClass="GMSMapView">
-                                <rect key="frame" x="28" y="28" width="560" height="564"/>
+                                <rect key="frame" x="20" y="28" width="560" height="515"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="l7U-7v-0lH" firstAttribute="leading" secondItem="6tu-Ww-rDp" secondAttribute="leadingMargin" constant="8" id="7DX-Rl-AXr"/>
-                            <constraint firstItem="l7U-7v-0lH" firstAttribute="trailing" secondItem="6tu-Ww-rDp" secondAttribute="trailingMargin" constant="8" id="mOh-NV-FeF"/>
-                            <constraint firstItem="l7U-7v-0lH" firstAttribute="top" secondItem="M2g-5F-JMm" secondAttribute="bottom" constant="8" id="nth-Vc-7bz"/>
-                            <constraint firstAttribute="bottomMargin" secondItem="l7U-7v-0lH" secondAttribute="bottom" constant="8" id="y7h-VB-bEZ"/>
+                            <constraint firstItem="l7U-7v-0lH" firstAttribute="top" secondItem="M2g-5F-JMm" secondAttribute="bottom" constant="8" symbolic="YES" id="NmG-kq-heF"/>
+                            <constraint firstItem="l7U-7v-0lH" firstAttribute="leading" secondItem="6tu-Ww-rDp" secondAttribute="leadingMargin" id="SwY-Tx-eWf"/>
+                            <constraint firstItem="l7U-7v-0lH" firstAttribute="trailing" secondItem="6tu-Ww-rDp" secondAttribute="trailingMargin" id="gtC-CR-S1Y"/>
+                            <constraint firstItem="iQe-y6-vE4" firstAttribute="top" secondItem="l7U-7v-0lH" secondAttribute="bottom" constant="8" symbolic="YES" id="iB0-dY-jO9"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Driver" id="D7l-oI-Iz4"/>
+                    <connections>
+                        <outlet property="mapView" destination="l7U-7v-0lH" id="OFE-OW-ZLK"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bgT-tb-39c" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
