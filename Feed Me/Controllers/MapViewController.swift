@@ -47,8 +47,8 @@ class MapViewController: UIViewController, SocketClientProtocol {
   override func viewDidLoad() {
     super.viewDidLoad()
     // Do any additional setup after loading the view, typically from a nib.
-    client = SocketClient(host: "192.168.28.1", port: 3000, connectParams: [:])
-    client.callback = self
+    client = SocketClient.instance()
+    client.passengerCallback = self
     client.connect()
     locationManager.delegate = self
     
@@ -88,17 +88,19 @@ class MapViewController: UIViewController, SocketClientProtocol {
     print("Data to UI: ", data)
     do {
       let json = try NSJSONSerialization.JSONObjectWithData(data.dataUsingEncoding(NSUTF8StringEncoding)!, options: .AllowFragments)
-      let uuid = json["from"] as! String
-      let latitude = json["lat"] as! Double
-      let longitude = json["lon"] as! Double
-      if let m = markers_dictionary[uuid] {
-        m.position = CLLocationCoordinate2DMake(latitude, longitude)
-      } else {
-        let marker = GMSMarker()
-        marker.title = uuid
-        marker.position = CLLocationCoordinate2DMake(latitude, longitude)
-        marker.map = mapView
-        markers_dictionary[uuid] = marker
+      if (json["from_type"] as! String == "driver") {
+        let uuid = json["from"] as! String
+        let latitude = json["lat"] as! Double
+        let longitude = json["lon"] as! Double
+        if let m = markers_dictionary[uuid] {
+          m.position = CLLocationCoordinate2DMake(latitude, longitude)
+        } else {
+          let marker = GMSMarker()
+          marker.title = uuid
+          marker.position = CLLocationCoordinate2DMake(latitude, longitude)
+          marker.map = mapView
+          markers_dictionary[uuid] = marker
+        }
       }
     } catch {
       print("error serializing JSON: \(error)")

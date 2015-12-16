@@ -12,6 +12,8 @@ class DriverViewController: UIViewController {
   
   var updateOnce = true
   let locationManager = CLLocationManager()
+  let client = SocketClient.instance()
+  var markers_dictionary = [String: GMSMarker]()
   
   @IBOutlet weak var mapView: GMSMapView!
   
@@ -29,6 +31,7 @@ class DriverViewController: UIViewController {
     }
     
     mapView.delegate = self
+    client.driverCallback = self
   }
 }
 
@@ -53,6 +56,36 @@ extension DriverViewController : CLLocationManagerDelegate {
         mapView.camera = GMSCameraPosition(target: location.coordinate, zoom: 15, bearing: 0, viewingAngle: 0)
         updateOnce = false
       }
+      client.write(location.coordinate)
     }
+  }
+}
+
+extension DriverViewController : SocketClientProtocol {
+  func didFinishReading(data: String) {
+    do {
+      let json = try NSJSONSerialization.JSONObjectWithData(data.dataUsingEncoding(NSUTF8StringEncoding)!, options: .AllowFragments)
+      if (json["from_type"] as! String == "passenger") {
+        let uuid = json["from"] as! String
+        let latitude = json["destination"]!!["lat"] as! Double
+        let longitude = json["destination"]!!["lon"] as! Double
+        if let m = markers_dictionary[uuid] {
+          m.position = CLLocationCoordinate2DMake(latitude, longitude)
+        } else {
+          let marker = GMSMarker()
+          marker.title = uuid
+          marker.position = CLLocationCoordinate2DMake(latitude, longitude)
+          marker.map = mapView
+          markers_dictionary[uuid] = marker
+        }
+      }
+    } catch {
+      print("error serializing JSON: \(error)")
+    }
+  }
+  
+  func didSocketDisconnected(data: String) {
+    markers_dictionary[data]?.map = nil
+    markers_dictionary[data] = nil
   }
 }

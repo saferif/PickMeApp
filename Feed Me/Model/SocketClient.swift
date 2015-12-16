@@ -20,8 +20,17 @@ class SocketClient {
   let connectParams: [String: [String: String]]
   let socket: SocketIOClient
   var connected = false;
-  var callback: SocketClientProtocol?
+  var driverCallback: SocketClientProtocol?
+  var passengerCallback : SocketClientProtocol?
   
+  static var clientInstance : SocketClient!
+  
+  static func instance() -> SocketClient {
+    if (clientInstance == nil) {
+      clientInstance = SocketClient(host: "localhost", port: 80, connectParams: [:])
+    }
+    return clientInstance
+  }
 
   init(host: String, port: UInt16, connectParams: [String: [String:String]]) {
     self.host = host
@@ -52,16 +61,18 @@ class SocketClient {
     }
     
     socket.on("broadcast") {data, ack in
-      self.callback?.didFinishReading(data[0] as! String)
+      self.driverCallback?.didFinishReading(data[0] as! String)
+      self.passengerCallback?.didFinishReading(data[0] as! String)
     }
     
     socket.on("disconnect") {data, ack in
-      self.callback?.didSocketDisconnected(data[0] as! String)
+      self.driverCallback?.didSocketDisconnected(data[0] as! String)
+      self.passengerCallback?.didSocketDisconnected(data[0] as! String)
     }
   }
   
   func write(coordinate: CLLocationCoordinate2D) {
-    let arr: [String: Double] = ["lat" : coordinate.latitude, "lon" : coordinate.longitude]
+    let arr = ["from_type" : "driver", "lat" : coordinate.latitude, "lon" : coordinate.longitude]
     do {
       let json = try NSJSONSerialization.dataWithJSONObject(arr, options: [])
       self.socket.emit("broadcast", json)
