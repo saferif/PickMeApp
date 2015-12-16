@@ -53,7 +53,7 @@ class MapViewController: UIViewController, SocketClientProtocol {
     // Do any additional setup after loading the view, typically from a nib.
     client = SocketClient.instance()
     client.passengerCallback = self
-    client.connect()
+    client.connect(userInfo)
     locationManager.delegate = self
     
     let authState = CLLocationManager.authorizationStatus()

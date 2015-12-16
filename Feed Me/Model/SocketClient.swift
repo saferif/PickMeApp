@@ -19,7 +19,7 @@ protocol SocketClientProtocol {
 class SocketClient {
   let host: String
   let port: UInt16
-  let connectParams: [String: [String: String]]
+ // let userInfo: NSData
   let socket: SocketIOClient
   var connected = false;
   var driverCallback: SocketClientProtocol?
@@ -29,15 +29,14 @@ class SocketClient {
   
   static func instance() -> SocketClient {
     if (clientInstance == nil) {
-      clientInstance = SocketClient(host: "localhost", port: 80, connectParams: [:])
+      clientInstance = SocketClient(host: "46.101.122.129", port: 80)
     }
     return clientInstance
   }
 
-  init(host: String, port: UInt16, connectParams: [String: [String:String]]) {
+  init(host: String, port: UInt16) {
     self.host = host
     self.port = port
-    self.connectParams = connectParams
    /* print(self.connectParams)
     do {
     var vv = connectParams["userInfo"]!
@@ -47,19 +46,19 @@ class SocketClient {
     } catch {
       
     }*/
-    
     self.socket = SocketIOClient(socketURL: host + ":" + String(port),
-      options: [.Log(true), .ForcePolling(true), .ConnectParams(connectParams)])
+      options: [.Log(true), .ForcePolling(true)])
   }
   
-  func connect() {
-    self.addHandlers()
+  func connect(userInfo: NSData) {
+    self.addHandlers(userInfo)
     self.socket.connect()
   }
   
-  func addHandlers() {
+  func addHandlers(userInfo: NSData) {
     socket.on("connect") {data, ack in
       print("socket connected, ack: ", ack)
+        self.newUserInfo(userInfo)
     }
     
     socket.on("broadcast") {data, ack in

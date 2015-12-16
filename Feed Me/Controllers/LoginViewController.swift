@@ -42,20 +42,20 @@ class LoginViewController: UIViewController {
       super.prepareForSegue(segue, sender: sender)
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
-//      if segue.identifier == "LoginSegue" {
-//        let tabBarController = segue.destinationViewController as! UITabBarController
-//        if let mapVC = tabBarController.viewControllers![0] as? MapViewController {
-//       // if let mapVC = segue.destinationViewController as? MapViewController {
-//          do {
-//            print(usernameText.text!)
-//            print(carNumberText.text!)
-//            print(NSJSONSerialization.isValidJSONObject(["username": usernameText.text!, "carNumber": carNumberText.text!]))
-//          try mapVC.userInfo = NSJSONSerialization.dataWithJSONObject(["username": usernameText.text!, "carNumber": carNumberText.text!], options: [])
-//          } catch {
-//            print("Error with JSON in loginViewController")
-//          }
-//        }
-//      }
+      if segue.identifier == "LoginSegue" {
+       let tabBarController = segue.destinationViewController as! UITabBarController
+       if let mapVC = tabBarController.viewControllers![0] as? MapViewController {
+       // if let mapVC = segue.destinationViewController as? MapViewController {
+          do {
+            print(usernameText.text!)
+            print(carNumberText.text!)
+            print(NSJSONSerialization.isValidJSONObject(["username": usernameText.text!, "carNumber": carNumberText.text!]))
+          try mapVC.userInfo = NSJSONSerialization.dataWithJSONObject(["username": usernameText.text!, "carNumber": carNumberText.text!], options: [])
+          } catch {
+            print("Error with JSON in loginViewController")
+          }
+        }
+      }
     }
 
 
