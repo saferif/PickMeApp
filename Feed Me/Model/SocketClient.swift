@@ -70,12 +70,16 @@ class SocketClient {
     }
     
   }
-    
   
-  
-  
-  
-  
-  
+  func write(offer : PassengerOffer) {
+    let json_dict = ["from_type" : "passenger", "price" : offer.price, "destination" : ["lat" : offer.destination.latitude, "lon" : offer.destination.longitude]]
+    do {
+      let json = try NSJSONSerialization.dataWithJSONObject(json_dict, options: [])
+      print(NSString(data: json, encoding: NSUTF8StringEncoding))
+      self.socket.emit("broadcast", json)
+    } catch {
+      print("error serializing JSON: \(error)")
+    }
+  }
   
 }

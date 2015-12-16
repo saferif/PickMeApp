@@ -37,6 +37,8 @@ class MapViewController: UIViewController, SocketClientProtocol {
   var userInfo: NSData!
   var client: SocketClient!
   
+  var toNeedBroadcast : Bool = false;
+  
   @IBOutlet weak var mapView: GMSMapView!
   @IBOutlet weak var pickMeButton : UIButton!
   @IBOutlet weak var destinationTextField : UITextField!
@@ -49,12 +51,22 @@ class MapViewController: UIViewController, SocketClientProtocol {
     client.callback = self
     client.connect()
     locationManager.delegate = self
+    
+    let authState = CLLocationManager.authorizationStatus()
+    if (authState == CLAuthorizationStatus.NotDetermined) {
+      locationManager.requestWhenInUseAuthorization()
+    } else if (authState != CLAuthorizationStatus.Denied) {
+      locationManager.startUpdatingLocation()
+      mapView.myLocationEnabled = true
+      mapView.settings.myLocationButton = true
+    }
+    
     mapView.delegate = self
     let marker = GMSMarker()
     marker.position = CLLocationCoordinate2DMake(37.4, -122)
     marker.title = "Hello World"
     marker.map = mapView
-    locationManager.requestWhenInUseAuthorization()
+    
   }
   
   override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
@@ -94,7 +106,13 @@ class MapViewController: UIViewController, SocketClientProtocol {
   }
   
   @IBAction func pickMeTapped(sender : AnyObject) {
-
+    if (toNeedBroadcast) {
+      pickMeButton.setTitle("Pick me", forState: .Normal)
+      toNeedBroadcast = false
+    } else {
+      pickMeButton.setTitle("Cancel the request", forState: .Normal)
+      toNeedBroadcast = true
+    }
   }
 }
 
@@ -129,21 +147,6 @@ extension MapViewController : CLLocationManagerDelegate, GMSMapViewDelegate {
     }
   }
   
-  func mapView(mapView: GMSMapView!, didTapMarker marker: GMSMarker!) -> Bool {
-    
-    //разобраться с хренью снизу
-    
-    
-    //let myFirstButton = UIButton()
-    //myFirstButton.setTitle("Test", forState: .Normal)
-    //myFirstButton.setTitleColor(UIColor.blueColor(), forState: .Normal)
-    //myFirstButton.frame = CGRectMake(15, -50, 300, 500)
-    //myFirstButton.addTarget(self, action: "pressed:", forControlEvents: .TouchUpInside)
-    
-    //self.view.addSubview(myFirstButton)
-    return true
-  }
-  
   func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
     if status == .AuthorizedWhenInUse {
 
@@ -167,7 +170,16 @@ extension MapViewController : CLLocationManagerDelegate, GMSMapViewDelegate {
      // marker.position = CLLocationCoordinate2DMake(marker.position.latitude + 0.0001, marker.position.longitude)
       
       print(location.coordinate)
-      client.write(location.coordinate)
+      
+      if (toNeedBroadcast) {
+        let offer : PassengerOffer
+        if let price = Double(costTextField.text!) {
+          offer = PassengerOffer(destination: location.coordinate, price: price)
+        } else {
+          offer = PassengerOffer(destination: location.coordinate, price: 0.0)
+        }
+        client.write(offer)
+      }
       
      // locationManager.stopUpdatingLocation()
     }
