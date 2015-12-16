@@ -11,7 +11,9 @@ import Socket_IO_Client_Swift
 
 protocol SocketClientProtocol {
   func didFinishReading(data: String)
+  func didFinishReadingUserData(data: String)
   func didSocketDisconnected(data: String)
+  
 }
 
 class SocketClient {
@@ -65,9 +67,33 @@ class SocketClient {
       self.passengerCallback?.didFinishReading(data[0] as! String)
     }
     
+    socket.on("getUserInfo") {data, ack in
+      self.driverCallback?.didFinishReadingUserData(data[0] as! String)
+      self.passengerCallback?.didFinishReadingUserData(data[0] as! String)
+    }
+    
     socket.on("disconnect") {data, ack in
       self.driverCallback?.didSocketDisconnected(data[0] as! String)
       self.passengerCallback?.didSocketDisconnected(data[0] as! String)
+    }
+  }
+  
+  func getUserInfo(uuid: String) {
+    self.socket.emit("getUserInfo", dictionaryToJSON(["uuid": uuid])!)
+  }
+  
+  
+  func newUserInfo(data: NSData) {
+    self.socket.emit("newUserInfo", data)
+  }
+  
+  func dictionaryToJSON(dictionary: [String: AnyObject]) -> NSData? {
+    do {
+      let json = try NSJSONSerialization.dataWithJSONObject(dictionary, options: [])
+      return json
+    } catch {
+      print("error serializing JSON: \(error)")
+      return nil
     }
   }
   

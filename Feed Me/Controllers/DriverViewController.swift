@@ -14,12 +14,14 @@ class DriverViewController: UIViewController {
   let locationManager = CLLocationManager()
   let client = SocketClient.instance()
   var markers_dictionary = [String: GMSMarker]()
+  var currentMarker : GMSMarker!
+  var getUserData = [String: AnyObject]()
   
   @IBOutlet weak var mapView: GMSMapView!
   
   override func viewDidLoad() {
     super.viewDidLoad();
-    
+    getUserData["available"] = false
     locationManager.delegate = self
     let authState = CLLocationManager.authorizationStatus()
     if (authState == CLAuthorizationStatus.NotDetermined) {
@@ -83,6 +85,24 @@ extension DriverViewController : SocketClientProtocol {
       print("error serializing JSON: \(error)")
     }
   }
+  
+  func didFinishReadingUserData(data: String) {
+    print("Data to UI: ", data)
+    do {
+      let json = try NSJSONSerialization.JSONObjectWithData(data.dataUsingEncoding(NSUTF8StringEncoding)!, options: .AllowFragments)
+      getUserData["uuid"] = json["uuid"]
+      getUserData["username"] = json["username"]
+      getUserData["carNumber"] = json["carNumber"]
+      if (currentMarker == markers_dictionary[json["uuid"] as! String]) {
+        mapView.selectedMarker = currentMarker
+        getUserData["available"] = true;
+        
+      }
+    } catch {
+      print("error serializing JSON: \(error)")
+    }
+  }
+
   
   func didSocketDisconnected(data: String) {
     markers_dictionary[data]?.map = nil

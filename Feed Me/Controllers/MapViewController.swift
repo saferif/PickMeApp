@@ -25,7 +25,7 @@
 */
 
 import UIKit
-import PPRevealSideViewController
+//import PPRevealSideViewController
 
 class MapViewController: UIViewController, SocketClientProtocol {
   var searchedTypes = ["bakery", "bar", "cafe", "grocery_or_supermarket", "restaurant"]
@@ -35,6 +35,8 @@ class MapViewController: UIViewController, SocketClientProtocol {
   var updateOnce = true
   var markers_dictionary = [String: GMSMarker]()
   var userInfo: NSData!
+  var currentMarker : GMSMarker!
+  var getUserData = [String: AnyObject]()
   var client: SocketClient!
   var destinationCoordinate : CLLocationCoordinate2D?
   
@@ -47,6 +49,7 @@ class MapViewController: UIViewController, SocketClientProtocol {
   
   override func viewDidLoad() {
     super.viewDidLoad()
+     getUserData["available"] = false
     // Do any additional setup after loading the view, typically from a nib.
     client = SocketClient.instance()
     client.passengerCallback = self
@@ -108,6 +111,23 @@ class MapViewController: UIViewController, SocketClientProtocol {
     }
   }
   
+  func didFinishReadingUserData(data: String) {
+    print("Data to UI: ", data)
+    do {
+      let json = try NSJSONSerialization.JSONObjectWithData(data.dataUsingEncoding(NSUTF8StringEncoding)!, options: .AllowFragments)
+      getUserData["uuid"] = json["uuid"]
+      getUserData["username"] = json["username"]
+      getUserData["carNumber"] = json["carNumber"]
+      if (currentMarker == markers_dictionary[json["uuid"] as! String]) {
+        mapView.selectedMarker = currentMarker
+        getUserData["available"] = true;
+        
+      }
+    } catch {
+      print("error serializing JSON: \(error)")
+    }
+  }
+  
   @IBAction func pickMeTapped(sender : AnyObject) {
     if (toNeedBroadcast) {
       pickMeButton.setTitle("Pick me", forState: .Normal)
@@ -129,12 +149,25 @@ extension MapViewController: TypesTableViewControllerDelegate {
 
 extension MapViewController : CLLocationManagerDelegate, GMSMapViewDelegate {
   
-  func mapView(mapView: GMSMapView!, markerInfoContents marker: GMSMarker!) -> UIView! {
+  func mapView(mapView: GMSMapView!, markerInfoWindow marker: GMSMarker!) -> UIView! {
+    if ((getUserData["available"] as! Bool) == false) {
+      let uuid : String? = "1"
+      currentMarker = marker
+      markers_dictionary[uuid!] = currentMarker
+      //dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
+      self.client.getUserInfo(uuid!)
+      return nil
+    }
+    // let uuid = ((markers_dictionary as NSDictionary).allKeysForObject(marker) as! [String]).first
+    
     if let infoView = NSBundle.mainBundle().loadNibNamed("UserInfoView", owner: nil, options: nil).first as? UserInfoView {
+      infoView.username.text = getUserData["username"] as? String
+      getUserData["available"] = false;
       return infoView
     } else {
       return nil
     }
+
   }
 
   func mapView(mapView: GMSMapView!, didLongPressAtCoordinate coordinate: CLLocationCoordinate2D) {

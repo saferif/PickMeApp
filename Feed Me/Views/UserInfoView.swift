@@ -10,7 +10,7 @@ import UIKit
 
 class UserInfoView: UIView {
 
-  @IBOutlet weak var userName: UILabel!
+  @IBOutlet weak var username: UILabel!
   @IBOutlet weak var userRating: UILabel!
   @IBOutlet weak var phoneNumber: UILabel!
 }
