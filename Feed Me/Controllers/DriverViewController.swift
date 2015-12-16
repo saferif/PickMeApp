@@ -67,8 +67,8 @@ extension DriverViewController : SocketClientProtocol {
       let json = try NSJSONSerialization.JSONObjectWithData(data.dataUsingEncoding(NSUTF8StringEncoding)!, options: .AllowFragments)
       if (json["from_type"] as! String == "passenger") {
         let uuid = json["from"] as! String
-        let latitude = json["destination"]!!["lat"] as! Double
-        let longitude = json["destination"]!!["lon"] as! Double
+        let latitude = json["current"]!!["lat"] as! Double
+        let longitude = json["current"]!!["lon"] as! Double
         if let m = markers_dictionary[uuid] {
           m.position = CLLocationCoordinate2DMake(latitude, longitude)
         } else {

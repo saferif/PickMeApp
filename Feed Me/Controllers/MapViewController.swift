@@ -36,6 +36,7 @@ class MapViewController: UIViewController, SocketClientProtocol {
   var markers_dictionary = [String: GMSMarker]()
   var userInfo: NSData!
   var client: SocketClient!
+  var destinationCoordinate : CLLocationCoordinate2D?
   
   var toNeedBroadcast : Bool = false;
   
@@ -142,6 +143,7 @@ extension MapViewController : CLLocationManagerDelegate, GMSMapViewDelegate {
       if let address = response?.firstResult() {
         let lines = address.lines as! [String]
         self.destinationTextField.text = lines.joinWithSeparator("\n")
+        self.destinationCoordinate = coordinate
         UIView.animateWithDuration(0.25) {
           self.view.layoutIfNeeded()
         }
@@ -175,12 +177,14 @@ extension MapViewController : CLLocationManagerDelegate, GMSMapViewDelegate {
       
       if (toNeedBroadcast) {
         let offer : PassengerOffer
-        if let price = Double(costTextField.text!) {
-          offer = PassengerOffer(destination: location.coordinate, price: price)
-        } else {
-          offer = PassengerOffer(destination: location.coordinate, price: 0.0)
+        if let dstCoords = destinationCoordinate {
+          if let price = Double(costTextField.text!) {
+            offer = PassengerOffer(currentPosition: location.coordinate, destination: dstCoords, price: price)
+          } else {
+            offer = PassengerOffer(currentPosition: location.coordinate, destination: dstCoords, price: 0.0)
+          }
+          client.write(offer)
         }
-        client.write(offer)
       }
       
      // locationManager.stopUpdatingLocation()
