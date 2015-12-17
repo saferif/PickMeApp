@@ -49,7 +49,7 @@ class MapViewController: UIViewController, SocketClientProtocol {
   
   override func viewDidLoad() {
     super.viewDidLoad()
-     getUserData["available"] = false
+    getUserData["available"] = false
     // Do any additional setup after loading the view, typically from a nib.
     client = SocketClient.instance()
     client.passengerCallback = self
@@ -66,10 +66,10 @@ class MapViewController: UIViewController, SocketClientProtocol {
     }
     
     mapView.delegate = self
-    let marker = GMSMarker()
-    marker.position = CLLocationCoordinate2DMake(37.4, -122)
-    marker.title = "Hello World"
-    marker.map = mapView
+   // let marker = GMSMarker()
+   // marker.position = CLLocationCoordinate2DMake(37.4, -122)
+   // marker.title = "Hello World"
+   // marker.map = mapView
     
   }
   
@@ -87,6 +87,25 @@ class MapViewController: UIViewController, SocketClientProtocol {
     markers_dictionary[data] = nil
   }
   
+  func receivedApproval(data: String) {
+    print("Data to UI: ", data)
+    do {
+      let json = try NSJSONSerialization.JSONObjectWithData(data.dataUsingEncoding(NSUTF8StringEncoding)!, options: .AllowFragments)
+      let uuid = json["from"] as! String
+      if let m = markers_dictionary[uuid] {
+        mapView.camera = GMSCameraPosition(target: m.position, zoom: 10, bearing: 0, viewingAngle: 0)
+        mapView.selectedMarker = m
+        sleep(2)
+        let alert = UIAlertController(title: "Driver found", message: "This driver will pick you up!", preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Finish ride", style: UIAlertActionStyle.Default, handler: nil))
+        self.presentViewController(alert, animated: true, completion: nil)
+
+      }
+     
+    } catch {
+      print("error serializing JSON: \(error)")
+    }
+  }
   
   func didFinishReading(data: String) {
     print("Data to UI: ", data)
@@ -100,7 +119,7 @@ class MapViewController: UIViewController, SocketClientProtocol {
           m.position = CLLocationCoordinate2DMake(latitude, longitude)
         } else {
           let marker = GMSMarker()
-          marker.title = uuid
+        //  marker.title = uuid
           marker.position = CLLocationCoordinate2DMake(latitude, longitude)
           marker.map = mapView
           markers_dictionary[uuid] = marker
@@ -131,9 +150,14 @@ class MapViewController: UIViewController, SocketClientProtocol {
   @IBAction func pickMeTapped(sender : AnyObject) {
     if (toNeedBroadcast) {
       pickMeButton.setTitle("Pick me", forState: .Normal)
+      destinationTextField.enabled = true
+      costTextField.enabled = true
+
       toNeedBroadcast = false
     } else {
       pickMeButton.setTitle("Cancel the request", forState: .Normal)
+      destinationTextField.enabled = false
+      costTextField.enabled = false
       toNeedBroadcast = true
     }
   }
@@ -149,9 +173,9 @@ extension MapViewController: TypesTableViewControllerDelegate {
 
 extension MapViewController : CLLocationManagerDelegate, GMSMapViewDelegate {
   
-  func mapView(mapView: GMSMapView!, markerInfoWindow marker: GMSMarker!) -> UIView! {
+  func mapView(mapView: GMSMapView!, markerInfoContents marker: GMSMarker!) -> UIView! {
     if ((getUserData["available"] as! Bool) == false) {
-     // let uuid = "1"
+    //  let uuid = "1"
       let uuid = ((markers_dictionary as NSDictionary).allKeysForObject(marker) as! [String]).first
       currentMarker = marker
       markers_dictionary[uuid!] = currentMarker
@@ -161,12 +185,15 @@ extension MapViewController : CLLocationManagerDelegate, GMSMapViewDelegate {
     }
     
     if let infoView = NSBundle.mainBundle().loadNibNamed("UserInfoView", owner: nil, options: nil).first as? UserInfoView {
+      infoView.cost.hidden = true
       infoView.username.text = getUserData["username"] as? String
+      infoView.userImage.image = UIImage(named:"driving_pin")!
       getUserData["available"] = false;
       return infoView
     } else {
       return nil
     }
+    
 
   }
 
@@ -177,7 +204,7 @@ extension MapViewController : CLLocationManagerDelegate, GMSMapViewDelegate {
         let lines = address.lines as! [String]
         self.destinationTextField.text = lines.joinWithSeparator("\n")
         self.destinationCoordinate = coordinate
-        UIView.animateWithDuration(0.25) {
+        UIView.animateWithDuration(0.25) {  //Это что?))
           self.view.layoutIfNeeded()
         }
       }

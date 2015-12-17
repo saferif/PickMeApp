@@ -11,6 +11,14 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
+         contextName = "MapViewController.locationManager(CLLocationManager, didUpdateLocations : [CLLocation]) -&gt; ():MapViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "destinationCoordinate">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "MapViewController.viewDidLoad() -&gt; ():MapViewController.swift">
          <PersistentStrings>
             <PersistentString
@@ -25,7 +33,23 @@
          contextName = "SocketClient.init(host : String, port : UInt16, connectParams : [String : AnyObject]) -&gt; SocketClient:SocketClient.swift">
       </ContextState>
       <ContextState
+         contextName = "DriverViewController.mapView(GMSMapView!, markerInfoWindow : GMSMarker!) -&gt; UIView!:DriverViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "getUserData">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "LoginViewController.prepareForSegue(UIStoryboardSegue, sender : AnyObject?) -&gt; ():LoginViewController.swift">
+      </ContextState>
+      <ContextState
+         contextName = "DriverViewController.acceptRide(UIButton) -&gt; ():DriverViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "getUserData">
+            </PersistentString>
+         </PersistentStrings>
       </ContextState>
       <ContextState
          contextName = "SocketClient.init(host : String, port : UInt16, connectParams : [String : NSData]) -&gt; SocketClient:SocketClient.swift">
@@ -40,6 +64,14 @@
          <PersistentStrings>
             <PersistentString
                value = "myself">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "DriverViewController.didFinishReading(String) -&gt; ():DriverViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "getUserData">
             </PersistentString>
          </PersistentStrings>
       </ContextState>

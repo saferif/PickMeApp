@@ -13,7 +13,7 @@ protocol SocketClientProtocol {
   func didFinishReading(data: String)
   func didFinishReadingUserData(data: String)
   func didSocketDisconnected(data: String)
-  
+  func receivedApproval(data: String)
 }
 
 class SocketClient {
@@ -75,6 +75,13 @@ class SocketClient {
       self.driverCallback?.didSocketDisconnected(data[0] as! String)
       self.passengerCallback?.didSocketDisconnected(data[0] as! String)
     }
+    
+    socket.on("direct") {data, ack in
+      self.driverCallback?.receivedApproval(data[0] as! String)
+      self.passengerCallback?.receivedApproval(data[0] as! String)
+    }
+
+    
   }
   
   func getUserInfo(uuid: String) {
@@ -95,6 +102,11 @@ class SocketClient {
       return nil
     }
   }
+  
+  func approve(uuid: String) {
+    self.socket.emit("direct", dictionaryToJSON(["to": uuid])!)
+  }
+  
   
   func write(coordinate: CLLocationCoordinate2D) {
     let arr = ["from_type" : "driver", "lat" : coordinate.latitude, "lon" : coordinate.longitude]
